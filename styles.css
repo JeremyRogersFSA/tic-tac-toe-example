@@ -1,0 +1,15 @@
+.row {
+  display: flex;
+  justify-content: center;
+}
+
+.cell {
+  border: 2px solid black;
+  width: 100px;
+  height: 100px;
+  margin: 8px;
+}
+
+#board {
+  border: 2px dotted red;
+}
