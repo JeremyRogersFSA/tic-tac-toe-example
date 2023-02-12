@@ -4,12 +4,22 @@ let gameboard = [
   [null, null, null]
 ]
 
+let player = 'X'
+let winner = ''
+let player1 = ''
+let player2 = ''
+let gameStart = false
+let availableMoves = 9
+
 let boardElement = document.getElementById('board')
 let player1Btn = document.getElementById('player1-btn')
 let player2Btn = document.getElementById('player2-btn')
+let player1Input = document.getElementById('player1-input')
+let player2Input = document.getElementById('player2-input')
 let player1Name = document.getElementById('player1-name')
 let player2Name = document.getElementById('player2-name')
 let startBtn = document.getElementById('start-btn')
+let resetBtn = document.getElementById('reset-btn')
 let message = document.getElementById('message')
 
 // createe function to make the game board
@@ -36,13 +46,126 @@ function makeBoard() {
 //run the above function when the page finishes loading
 document.addEventListener('DOMContentLoaded', makeBoard)
 
+// start the game
+startBtn.addEventListener('click', () => {
+  if (gameStart === false) {
+    gameStart = true
+  }
+})
+
+resetBtn.addEventListener('click', () => {
+  gameboard = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null]
+  ]
+  //remove old nodes
+  while (boardElement.lastElementChild) {
+    boardElement.removeChild(boardElement.lastElementChild)
+  }
+  // make new board
+  makeBoard()
+
+  //reset game state
+  player = 'X'
+  winner = ''
+  gameStart = false
+  availableMoves = 9
+  message.textContent = ''
+})
+
+player1Btn.addEventListener('click', () => {
+  player1 = player1Input.value
+  player1Name.textContent = player1
+  player1Input.value = ''
+  player1Input.textContent = ''
+})
+player2Btn.addEventListener('click', () => {
+  player2 = player2Input.value
+  player2Name.textContent = player2
+  player2Input.value = ''
+  player2Input.textContent = ''
+})
+
+//make a move, check win or draw, change player
 boardElement.addEventListener('click', (event) => {
-  // click a cell, change the game board
-  if ('cell' in event.currentTarget.classList) {
-    let id = event.currentTarget.id.split('-')
-    let row = id[0]
-    let col = id[1]
-    event.currentTarget.textContent = gameboard[row][col]
-    console.log(event.currentTarget.id)
+  if (gameStart === true) {
+    // click a cell, change the game board
+    let classes = event.target.classList
+    if (classes.contains('cell')) {
+      let idArray = event.target.id.split('-')
+      let row = Number(idArray[0])
+      let col = Number(idArray[1])
+      if (gameboard[row][col] === null) {
+        // change gameboard, text of cell, and remove 1 from available moves
+        gameboard[row][col] = player
+        event.target.textContent = gameboard[row][col]
+        availableMoves--
+
+        // check if winning condition
+        let vertical = 0
+        let diagonalTop = 0
+        let diagonalBottom = 0
+        let bottom = 2
+
+        for (let rowI = 0; rowI < 3; rowI++) {
+          let horizontal = 0
+          // stop if winner found
+          if (winner !== '') {
+            break
+          }
+          //reset vertical
+          vertical = 0
+
+          // check diagonals
+          if (gameboard[rowI][rowI] === player) {
+            diagonalTop++
+          }
+          if (gameboard[bottom][rowI] === player) {
+            diagonalBottom++
+          }
+          // remove one from bottom, to move it up next time
+          bottom--
+
+          // check vertical and horizontal
+          for (let colI = 0; colI < 3; colI++) {
+            if (gameboard[colI][rowI] === player) {
+              vertical++
+            }
+            if (gameboard[rowI][colI] === player) {
+              horizontal++
+            }
+
+            // check if there are any 3 across
+            if (vertical === 3 || horizontal === 3 || diagonalTop === 3 || diagonalBottom === 3) {
+              // current player wins
+              if (player === 'X') {
+                winner = player1
+              } else {
+                winner = player2
+              }
+            }
+          }
+        }
+
+        if (winner !== '') {
+          gameStart = false
+          player = 'X'
+          message.textContent = `Player ${winner} wins!!!`
+        } else if (availableMoves === 0) {
+          // stop if no moves
+          gameStart = false
+          player = 'X'
+          message.textContent = 'Draw!!!'
+        } else {
+          // change player
+          if (player === 'O') {
+            player = 'X'
+          } else {
+            player = 'O'
+          }
+        }
+      }
+    }
   }
 })
