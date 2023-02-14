@@ -4,23 +4,22 @@ let gameboard = [
   [null, null, null]
 ]
 
+let boardElement = document.getElementById('board')
+let message = document.getElementById('message')
 let player = 'X'
 let winner = ''
+let player1Btn = document.getElementById('player1-btn')
+let player1Name = document.getElementById('player1-name')
+let player1Input = document.getElementById('player1-input')
 let player1 = ''
+let player2Btn = document.getElementById('player2-btn')
+let player2Input = document.getElementById('player2-input')
+let player2Name = document.getElementById('player2-name')
 let player2 = ''
 let gameStart = false
 let availableMoves = 9
-
-let boardElement = document.getElementById('board')
-let player1Btn = document.getElementById('player1-btn')
-let player2Btn = document.getElementById('player2-btn')
-let player1Input = document.getElementById('player1-input')
-let player2Input = document.getElementById('player2-input')
-let player1Name = document.getElementById('player1-name')
-let player2Name = document.getElementById('player2-name')
 let startBtn = document.getElementById('start-btn')
 let resetBtn = document.getElementById('reset-btn')
-let message = document.getElementById('message')
 
 // createe function to make the game board
 function makeBoard() {
@@ -75,10 +74,10 @@ resetBtn.addEventListener('click', () => {
 })
 
 player1Btn.addEventListener('click', () => {
-  player1 = player1Input.value
-  player1Name.textContent = player1
-  player1Input.value = ''
-  player1Input.textContent = ''
+  player1=player1Input.value
+  player1Name.textContent=player1
+  player1Input.value=''
+  player1Input.textContent=''
 })
 player2Btn.addEventListener('click', () => {
   player2 = player2Input.value
@@ -109,41 +108,41 @@ boardElement.addEventListener('click', (event) => {
         let bottom = 2
 
         for (let rowI = 0; rowI < 3; rowI++) {
-          let horizontal = 0
-          // stop if winner found
-          if (winner !== '') {
-            break
-          }
-          //reset vertical
-          vertical = 0
+        let horizontal = 0
+        // stop if winner found
+        if (winner !== '') {
+          break
+        }
+        //reset vertical
+        vertical = 0
 
-          // check diagonals
-          if (gameboard[rowI][rowI] === player) {
-            diagonalTop++
-          }
-          if (gameboard[bottom][rowI] === player) {
-            diagonalBottom++
-          }
-          // remove one from bottom, to move it up next time
-          bottom--
+        // check diagonals
+        if (gameboard[rowI][rowI] === player) {
+          diagonalTop++
+        }
+        if (gameboard[bottom][rowI] === player) {
+          diagonalBottom++
+        }
+        // remove one from bottom, to move it up next time
+        bottom--
 
-          // check vertical and horizontal
-          for (let colI = 0; colI < 3; colI++) {
-            if (gameboard[colI][rowI] === player) {
-              vertical++
+        // check vertical and horizontal
+        for (let colI = 0; colI < 3; colI++) {
+          if (gameboard[colI][rowI] === player) {
+            vertical++
+          }
+          if (gameboard[rowI][colI] === player) {
+            horizontal++
+          }
+
+          // check if there are any 3 across
+          if (vertical === 3 || horizontal === 3 || diagonalTop === 3 || diagonalBottom === 3) {
+            // current player wins
+            if (player === 'X') {
+              winner = player1
+            } else {
+              winner = player2
             }
-            if (gameboard[rowI][colI] === player) {
-              horizontal++
-            }
-
-            // check if there are any 3 across
-            if (vertical === 3 || horizontal === 3 || diagonalTop === 3 || diagonalBottom === 3) {
-              // current player wins
-              if (player === 'X') {
-                winner = player1
-              } else {
-                winner = player2
-              }
             }
           }
         }
@@ -159,11 +158,7 @@ boardElement.addEventListener('click', (event) => {
           message.textContent = 'Draw!!!'
         } else {
           // change player
-          if (player === 'O') {
-            player = 'X'
-          } else {
-            player = 'O'
-          }
+          player === 'O' ? (player = 'X') : (player = 'O')
         }
       }
     }
